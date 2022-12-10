@@ -1,7 +1,7 @@
 name: flutter_image_editor_plugin
-description: A new flutter plugin project.
+description: easy flutter image editor
 version: 0.0.1
-homepage:
+homepage: https://github.com/dksalsgus/flutter_image_editor_plugin
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
