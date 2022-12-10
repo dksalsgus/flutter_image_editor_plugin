@@ -1,6 +1,6 @@
 # flutter_image_editor_plugin
 
-A new flutter plugin project.
+Easy Flutter painter
 
 ## Getting Started
 
