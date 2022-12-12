@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_plugin/flutter_image_editor_plugin.dart';
 
 void main() {
@@ -16,47 +13,66 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  final drawLines = [];
+  final boundaryKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await FlutterImageEditorPlugin.platformVersion ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        appBar: _getAppbar(),
+        body: _getBody(),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _getAppbar() {
+    return AppBar(
+      title: const Text('Flutter Image Editor Plugin example app'),
+    );
+  }
+
+  Widget _getBody() {
+    return GestureDetector(
+      onPanStart: onPanStart,
+      onPanUpdate: onPanUpdate,
+      onPanEnd: onPanEnd,
+      child: RepaintBoundary(
+        key: boundaryKey,
+        child: CustomPaint(
+          foregroundPainter: ImageEditPainter(
+            drawLines: drawLines,
+          ),
+          child: Image.network(url),
         ),
       ),
     );
+  }
+
+  void onPanStart(DragStartDetails details) {
+    final box = globalKey.currentContext!.findRenderObject() as RenderBox;
+    final point = box.globalToLocal(details.globalPosition);
+    setState(() {
+      drawLines.add(DrawLine(path: Path(), drawPoint: List.generate(1, (index) => point), paint: paint));
+    });
+  }
+
+  void onPanUpdate(DragUpdateDetails details) {
+    final box = globalKey.currentContext!.findRenderObject() as RenderBox;
+    final point = box.globalToLocal(details.globalPosition);
+    setState(() {
+      drawLines.last.drawPoint.add(point);
+    });
+  }
+
+  void onPanEnd(DragEndDetails details) {
+    setState(() {
+      // drawLines.add(DrawLine(Path(), []));
+    });
   }
 }

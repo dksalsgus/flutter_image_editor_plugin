@@ -1,13 +1,4 @@
+library flutter_image_editor_plugin;
 
-import 'dart:async';
-
-import 'package:flutter/services.dart';
-
-class FlutterImageEditorPlugin {
-  static const MethodChannel _channel = MethodChannel('flutter_image_editor_plugin');
-
-  static Future<String?> get platformVersion async {
-    final String? version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-}
+export 'draw_line.dart';
+export 'image_editor_painter.dart';
