@@ -1,4 +1,7 @@
 
+## 0.0.2+0
+
+* TODO: refactor example
 ## 0.0.2
 
 * TODO: update example
