@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final drawLines = [];
+  final List<DrawLine> drawLines = [];
   final boundaryKey = GlobalKey();
 
   @override
@@ -48,31 +48,29 @@ class _MyAppState extends State<MyApp> {
           foregroundPainter: ImageEditPainter(
             drawLines: drawLines,
           ),
-          child: Image.network(url),
+          child: Image.asset('test/path'),
         ),
       ),
     );
   }
 
   void onPanStart(DragStartDetails details) {
-    final box = globalKey.currentContext!.findRenderObject() as RenderBox;
+    final box = boundaryKey.currentContext!.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
     setState(() {
-      drawLines.add(DrawLine(path: Path(), drawPoint: List.generate(1, (index) => point), paint: paint));
+      drawLines.add(DrawLine(path: Path(), drawPoint: List.generate(1, (index) => point), paint: Paint()));
     });
   }
 
   void onPanUpdate(DragUpdateDetails details) {
-    final box = globalKey.currentContext!.findRenderObject() as RenderBox;
+    final box = boundaryKey.currentContext!.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
     setState(() {
-      drawLines.last.drawPoint.add(point);
+      drawLines.last.drawPoint!.add(point);
     });
   }
 
   void onPanEnd(DragEndDetails details) {
-    setState(() {
-      // drawLines.add(DrawLine(Path(), []));
-    });
+    setState(() {});
   }
 }
