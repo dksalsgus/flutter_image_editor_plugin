@@ -13,7 +13,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  /// Draw object
   final List<DrawLine> drawLines = [];
+
+  /// Draw boundary
   final boundaryKey = GlobalKey();
 
   @override
@@ -45,23 +48,27 @@ class _MyAppState extends State<MyApp> {
       child: RepaintBoundary(
         key: boundaryKey,
         child: CustomPaint(
-          foregroundPainter: ImageEditPainter(
-            drawLines: drawLines,
-          ),
-          child: Image.asset('test/path'),
+          foregroundPainter: ImageEditPainter(drawLines: drawLines), // Here
+          child: Image.asset('test/path'), // Image to Draw
         ),
       ),
     );
   }
 
+  /// Start Draw
   void onPanStart(DragStartDetails details) {
     final box = boundaryKey.currentContext!.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
+    // You can custom paint line
+    final paint = Paint()
+      ..color = Colors.red
+      ..strokeWidth = 10; // ..etc
     setState(() {
-      drawLines.add(DrawLine(path: Path(), drawPoint: List.generate(1, (index) => point), paint: Paint()));
+      drawLines.add(DrawLine(path: Path(), drawPoint: List.generate(1, (index) => point), paint: paint));
     });
   }
 
+  /// Drawing
   void onPanUpdate(DragUpdateDetails details) {
     final box = boundaryKey.currentContext!.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
@@ -70,6 +77,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  /// Draw End
   void onPanEnd(DragEndDetails details) {
     setState(() {});
   }
